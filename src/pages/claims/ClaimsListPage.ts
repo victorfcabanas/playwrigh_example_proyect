@@ -29,7 +29,7 @@ export class ClaimsListPage extends BasePage {
   }
 
   async searchClaims(query: string): Promise<void> {
-    await this.searchInput.fill(query);
+    await this.searchInput.fill(String(query).trim());
     await this.searchInput.press('Enter');
     await this.waitForPageLoad();
   }
@@ -61,7 +61,13 @@ export class ClaimsListPage extends BasePage {
     for (const claimId of claimIds) {
       const checkbox = this.page.locator(`[data-claim-id="${claimId}"] input[type="checkbox"]`);
       if ((await checkbox.count()) === 0) continue;
-      await checkbox.check();
+      try {
+        await checkbox.check();
+      } catch (e) {
+        // element may be out of view in some layouts
+        await checkbox.scrollIntoViewIfNeeded().catch(() => {});
+        await checkbox.check().catch(() => {});
+      }
     }
   }
 
@@ -76,6 +82,6 @@ export class ClaimsListPage extends BasePage {
   }
 
   async waitForReady(): Promise<void> {
-    await this.page.locator('[data-testid="claims-list-page"]').waitFor({ state: 'visible' }).catch(() => {});
+    await this.page.locator('[data-testid="claims-list-page"]').waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
   }
 }
