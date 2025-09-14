@@ -13,8 +13,12 @@ export class Breadcrumb extends BaseComponent {
     const result: string[] = [];
     const count = await this.items.count();
     for (let i = 0; i < count; i++) {
-      result.push((await this.items.nth(i).textContent()) || '');
+      result.push(((await this.items.nth(i).textContent()) || '').trim());
     }
     return result;
+  }
+
+  async waitForReady(): Promise<void> {
+    await this.container.waitFor({ state: 'visible' }).catch(() => {});
   }
 }

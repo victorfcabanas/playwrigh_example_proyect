@@ -15,20 +15,20 @@ export class CustomerDashboard extends BasePage {
 
   constructor(page: Page) {
     super(page, '/dashboard/customer');
-    this.welcomeMessage = page.locator('[data-testid="welcome-message"]');
-    this.myClaimsSection = page.locator('[data-testid="my-claims-section"]');
-    this.createClaimButton = page.locator('[data-testid="create-claim-button"]');
-    this.recentClaims = page.locator('[data-testid="recent-claims"]');
-    this.claimStatusCards = page.locator('[data-testid="claim-status-cards"]');
-    this.myVehicles = page.locator('[data-testid="my-vehicles"]');
-    this.addVehicleButton = page.locator('[data-testid="add-vehicle-button"]');
-    this.profileSection = page.locator('[data-testid="profile-section"]');
-    this.notificationsPanel = page.locator('[data-testid="notifications-panel"]');
-    this.quickActions = page.locator('[data-testid="quick-actions"]');
+    this.welcomeMessage = this.page.locator('[data-testid="welcome-message"]');
+    this.myClaimsSection = this.page.locator('[data-testid="my-claims-section"]');
+    this.createClaimButton = this.page.locator('[data-testid="create-claim-button"]');
+    this.recentClaims = this.page.locator('[data-testid="recent-claims"]');
+    this.claimStatusCards = this.page.locator('[data-testid="claim-status-cards"]');
+    this.myVehicles = this.page.locator('[data-testid="my-vehicles"]');
+    this.addVehicleButton = this.page.locator('[data-testid="add-vehicle-button"]');
+    this.profileSection = this.page.locator('[data-testid="profile-section"]');
+    this.notificationsPanel = this.page.locator('[data-testid="notifications-panel"]');
+    this.quickActions = this.page.locator('[data-testid="quick-actions"]');
   }
 
   async getWelcomeMessage(): Promise<string> {
-    return await this.welcomeMessage.textContent() || '';
+    return (await this.welcomeMessage.textContent() || '').trim();
   }
 
   async createNewClaim(): Promise<void> {
@@ -94,7 +94,8 @@ export class CustomerDashboard extends BasePage {
   async getNotificationsCount(): Promise<number> {
     const badge = this.notificationsPanel.locator('[data-testid="notification-badge"]');
     const countText = await badge.textContent();
-    return parseInt(countText || '0');
+    const n = parseInt(countText || '0');
+    return Number.isNaN(n) ? 0 : n;
   }
 
   async performQuickAction(actionName: string): Promise<void> {
@@ -108,5 +109,9 @@ export class CustomerDashboard extends BasePage {
   async trackClaimStatus(claimNumber: string): Promise<void> {
     await this.page.locator('[data-testid="track-claim-input"]').fill(claimNumber);
     await this.page.locator('[data-testid="track-claim-button"]').click();
+  }
+
+  async waitForReady(): Promise<void> {
+    await this.page.locator('[data-testid="customer-dashboard"]').waitFor({ state: 'visible' }).catch(() => {});
   }
 }

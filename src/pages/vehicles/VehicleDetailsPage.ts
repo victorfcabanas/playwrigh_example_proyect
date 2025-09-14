@@ -12,13 +12,13 @@ export class VehicleDetailsPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.vehicleInfo = page.locator('[data-testid="vehicle-info"]');
-    this.ownerInfo = page.locator('[data-testid="owner-info"]');
-    this.insuranceInfo = page.locator('[data-testid="insurance-info"]');
-    this.maintenanceHistory = page.locator('[data-testid="maintenance-history"]');
-    this.claimsHistory = page.locator('[data-testid="claims-history"]');
-    this.editButton = page.locator('[data-testid="edit-vehicle-button"]');
-    this.deleteButton = page.locator('[data-testid="delete-vehicle-button"]');
+    this.vehicleInfo = this.page.locator('[data-testid="vehicle-info"]');
+    this.ownerInfo = this.page.locator('[data-testid="owner-info"]');
+    this.insuranceInfo = this.page.locator('[data-testid="insurance-info"]');
+    this.maintenanceHistory = this.page.locator('[data-testid="maintenance-history"]');
+    this.claimsHistory = this.page.locator('[data-testid="claims-history"]');
+    this.editButton = this.page.locator('[data-testid="edit-vehicle-button"]');
+    this.deleteButton = this.page.locator('[data-testid="delete-vehicle-button"]');
   }
 
   async getVehicleDetails(): Promise<{
@@ -29,11 +29,11 @@ export class VehicleDetailsPage extends BasePage {
     licensePlate: string;
   }> {
     return {
-      vin: await this.vehicleInfo.locator('[data-testid="vin"]').textContent() || '',
-      make: await this.vehicleInfo.locator('[data-testid="make"]').textContent() || '',
-      model: await this.vehicleInfo.locator('[data-testid="model"]').textContent() || '',
-      year: await this.vehicleInfo.locator('[data-testid="year"]').textContent() || '',
-      licensePlate: await this.vehicleInfo.locator('[data-testid="license-plate"]').textContent() || ''
+      vin: (await this.vehicleInfo.locator('[data-testid="vin"]').textContent() || '').trim(),
+      make: (await this.vehicleInfo.locator('[data-testid="make"]').textContent() || '').trim(),
+      model: (await this.vehicleInfo.locator('[data-testid="model"]').textContent() || '').trim(),
+      year: (await this.vehicleInfo.locator('[data-testid="year"]').textContent() || '').trim(),
+      licensePlate: (await this.vehicleInfo.locator('[data-testid="license-plate"]').textContent() || '').trim()
     };
   }
 
@@ -50,13 +50,17 @@ export class VehicleDetailsPage extends BasePage {
     for (let i = 0; i < count; i++) {
       const row = claimRows.nth(i);
       claims.push({
-        claimNumber: await row.locator('[data-testid="claim-number"]').textContent() || '',
-        date: await row.locator('[data-testid="claim-date"]').textContent() || '',
-        status: await row.locator('[data-testid="claim-status"]').textContent() || '',
-        amount: await row.locator('[data-testid="claim-amount"]').textContent() || ''
+        claimNumber: (await row.locator('[data-testid="claim-number"]').textContent() || '').trim(),
+        date: (await row.locator('[data-testid="claim-date"]').textContent() || '').trim(),
+        status: (await row.locator('[data-testid="claim-status"]').textContent() || '').trim(),
+        amount: (await row.locator('[data-testid="claim-amount"]').textContent() || '').trim()
       });
     }
 
     return claims;
+  }
+
+  async waitForReady(): Promise<void> {
+    await this.page.locator('[data-testid="vehicle-details-page"]').waitFor({ state: 'visible' }).catch(() => {});
   }
 }

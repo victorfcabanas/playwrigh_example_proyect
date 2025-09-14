@@ -18,18 +18,18 @@ export class VehicleRegistrationPage extends BasePage {
 
   constructor(page: Page) {
     super(page, '/vehicles/register');
-    this.vinInput = page.locator('[data-testid="vin-input"]');
-    this.licensePlateInput = page.locator('[data-testid="license-plate-input"]');
-    this.makeSelect = page.locator('[data-testid="make-select"]');
-    this.modelInput = page.locator('[data-testid="model-input"]');
-    this.yearSelect = page.locator('[data-testid="year-select"]');
-    this.typeSelect = page.locator('[data-testid="type-select"]');
-    this.colorInput = page.locator('[data-testid="color-input"]');
-    this.mileageInput = page.locator('[data-testid="mileage-input"]');
-    this.insurancePolicyInput = page.locator('[data-testid="insurance-policy-input"]');
-    this.registerButton = page.locator('[data-testid="register-button"]');
-    this.cancelButton = page.locator('[data-testid="cancel-button"]');
-    this.vinValidationStatus = page.locator('[data-testid="vin-validation-status"]');
+    this.vinInput = this.page.locator('[data-testid="vin-input"]');
+    this.licensePlateInput = this.page.locator('[data-testid="license-plate-input"]');
+    this.makeSelect = this.page.locator('[data-testid="make-select"]');
+    this.modelInput = this.page.locator('[data-testid="model-input"]');
+    this.yearSelect = this.page.locator('[data-testid="year-select"]');
+    this.typeSelect = this.page.locator('[data-testid="type-select"]');
+    this.colorInput = this.page.locator('[data-testid="color-input"]');
+    this.mileageInput = this.page.locator('[data-testid="mileage-input"]');
+    this.insurancePolicyInput = this.page.locator('[data-testid="insurance-policy-input"]');
+    this.registerButton = this.page.locator('[data-testid="register-button"]');
+    this.cancelButton = this.page.locator('[data-testid="cancel-button"]');
+    this.vinValidationStatus = this.page.locator('[data-testid="vin-validation-status"]');
   }
 
   async registerVehicle(vehicleData: Partial<Vehicle>): Promise<void> {
@@ -43,7 +43,7 @@ export class VehicleRegistrationPage extends BasePage {
     }
 
     if (vehicleData.make) {
-      await this.makeSelect.selectOption(vehicleData.make as string);
+      await this.makeSelect.selectOption(String(vehicleData.make));
     }
 
     if (vehicleData.model) {
@@ -55,7 +55,7 @@ export class VehicleRegistrationPage extends BasePage {
     }
 
     if (vehicleData.type) {
-      await this.typeSelect.selectOption(vehicleData.type as VehicleType);
+      await this.typeSelect.selectOption(String(vehicleData.type));
     }
 
     if (vehicleData.color) {
@@ -72,10 +72,21 @@ export class VehicleRegistrationPage extends BasePage {
 
   private async waitForVinValidation(): Promise<void> {
     await this.vinValidationStatus.waitFor({ state: 'visible' });
-    await this.page.waitForTimeout(2000); // Wait for validation to complete
+    // Poll the element text until non-empty or timeout
+    const maxAttempts = 20;
+    const delay = 100; // ms
+    for (let i = 0; i < maxAttempts; i++) {
+      const txt = (await this.vinValidationStatus.textContent()) || '';
+      if (txt.trim().length > 0) return;
+      await this.page.waitForTimeout(delay);
+    }
   }
 
   async getVinValidationMessage(): Promise<string> {
     return (await this.vinValidationStatus.textContent()) || '';
+  }
+
+  async waitForReady(): Promise<void> {
+    await this.page.locator('[data-testid="vehicle-registration-page"]').waitFor({ state: 'visible' }).catch(() => {});
   }
 }

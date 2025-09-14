@@ -11,12 +11,12 @@ export class AdminDashboard extends BasePage {
 
   constructor(page: Page) {
     super(page, '/dashboard/admin');
-    this.metricsCards = page.locator('[data-testid="admin-metrics"]');
-    this.userManagementSection = page.locator('[data-testid="user-management"]');
-    this.systemHealth = page.locator('[data-testid="system-health"]');
-    this.recentActivity = page.locator('[data-testid="recent-activity"]');
-    this.reportsSection = page.locator('[data-testid="reports-section"]');
-    this.manageUsersButton = page.locator('[data-testid="manage-users"]');
+    this.metricsCards = this.page.locator('[data-testid="admin-metrics"]');
+    this.userManagementSection = this.page.locator('[data-testid="user-management"]');
+    this.systemHealth = this.page.locator('[data-testid="system-health"]');
+    this.recentActivity = this.page.locator('[data-testid="recent-activity"]');
+    this.reportsSection = this.page.locator('[data-testid="reports-section"]');
+    this.manageUsersButton = this.page.locator('[data-testid="manage-users"]');
   }
 
   async getMetrics(): Promise<Record<string, number>> {
@@ -31,7 +31,7 @@ export class AdminDashboard extends BasePage {
 
   async runHealthCheck(): Promise<string> {
     await this.systemHealth.locator('[data-testid="run-health-check"]').click();
-    return await this.systemHealth.locator('[data-testid="health-status"]').textContent() || '';
+    return (await this.systemHealth.locator('[data-testid="health-status"]').textContent() || '').trim();
   }
 
   async getRecentActivity(): Promise<string[]> {
@@ -39,8 +39,12 @@ export class AdminDashboard extends BasePage {
     const result: string[] = [];
     const count = await items.count();
     for (let i = 0; i < count; i++) {
-      result.push((await items.nth(i).textContent()) || '');
+      result.push(((await items.nth(i).textContent()) || '').trim());
     }
     return result;
+  }
+
+  async waitForReady(): Promise<void> {
+    await this.page.locator('[data-testid="admin-dashboard"]').waitFor({ state: 'visible' }).catch(() => {});
   }
 }

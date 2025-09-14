@@ -13,4 +13,12 @@ export class Sidebar extends BaseComponent {
     await this.container.locator(`[data-action="${item}"]`).click();
     await this.page.waitForLoadState('networkidle');
   }
+
+  async hasMenuItem(itemText: string): Promise<boolean> {
+    return (await this.menuItems.filter({ hasText: itemText }).count()) > 0;
+  }
+
+  async waitForReady(): Promise<void> {
+    await this.container.waitFor({ state: 'visible' }).catch(() => {});
+  }
 }

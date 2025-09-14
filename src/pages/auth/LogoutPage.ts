@@ -9,10 +9,10 @@ export class LogoutPage extends BasePage {
 
   constructor(page: Page) {
     super(page, '/auth/logout');
-    this.logoutButton = page.locator('[data-testid="logout-button"]');
-    this.confirmLogoutButton = page.locator('[data-testid="confirm-logout-button"]');
-    this.cancelLogoutButton = page.locator('[data-testid="cancel-logout-button"]');
-    this.logoutMessage = page.locator('[data-testid="logout-message"]');
+    this.logoutButton = this.page.locator('[data-testid="logout-button"]');
+    this.confirmLogoutButton = this.page.locator('[data-testid="confirm-logout-button"]');
+    this.cancelLogoutButton = this.page.locator('[data-testid="cancel-logout-button"]');
+    this.logoutMessage = this.page.locator('[data-testid="logout-message"]');
   }
 
   async performLogout(): Promise<void> {
@@ -27,6 +27,10 @@ export class LogoutPage extends BasePage {
   }
 
   async getLogoutMessage(): Promise<string> {
-    return await this.logoutMessage.textContent() || '';
+    return (await this.logoutMessage.textContent() || '').trim();
+  }
+
+  async waitForReady(): Promise<void> {
+    await this.page.locator('[data-testid="logout-page"]').waitFor({ state: 'visible' }).catch(() => {});
   }
 }

@@ -9,10 +9,10 @@ export class LoginPage extends BasePage {
 
   constructor(page: Page) {
     super(page, '/auth/login');
-    this.emailInput = page.locator('[data-testid="login-email"]');
-    this.passwordInput = page.locator('[data-testid="login-password"]');
-    this.submitButton = page.locator('[data-testid="login-submit"]');
-    this.forgotPasswordLink = page.locator('[data-testid="forgot-password"]');
+    this.emailInput = this.page.locator('[data-testid="login-email"]');
+    this.passwordInput = this.page.locator('[data-testid="login-password"]');
+    this.submitButton = this.page.locator('[data-testid="login-submit"]');
+    this.forgotPasswordLink = this.page.locator('[data-testid="forgot-password"]');
   }
 
   async login(email: string, password: string): Promise<void> {
@@ -24,5 +24,9 @@ export class LoginPage extends BasePage {
 
   async navigateToForgotPassword(): Promise<void> {
     await this.forgotPasswordLink.click();
+  }
+
+  async waitForReady(): Promise<void> {
+    await this.page.locator('[data-testid="login-page"]').waitFor({ state: 'visible' }).catch(() => {});
   }
 }

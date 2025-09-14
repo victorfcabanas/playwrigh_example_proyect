@@ -21,4 +21,13 @@ export class WorkshopForm extends BaseComponent {
   async save(): Promise<void> {
     await this.saveButton.click();
   }
+
+  async clear(): Promise<void> {
+    await this.nameInput.fill('');
+    await this.addressInput.fill('');
+  }
+
+  async waitForReady(): Promise<void> {
+    await this.container.waitFor({ state: 'visible' });
+  }
 }

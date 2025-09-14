@@ -15,13 +15,13 @@ export class ClaimsListPage extends BasePage {
   constructor(page: Page) {
     super(page, '/claims');
     this.claimsTable = new ClaimsTable(page);
-    this.createClaimButton = page.locator('[data-testid="create-claim-button"]');
-    this.searchInput = page.locator('[data-testid="search-claims-input"]');
-    this.statusFilter = page.locator('[data-testid="status-filter"]');
-    this.dateFilter = page.locator('[data-testid="date-filter"]');
-    this.exportButton = page.locator('[data-testid="export-button"]');
-    this.refreshButton = page.locator('[data-testid="refresh-button"]');
-    this.bulkActions = page.locator('[data-testid="bulk-actions"]');
+    this.createClaimButton = this.page.locator('[data-testid="create-claim-button"]');
+    this.searchInput = this.page.locator('[data-testid="search-claims-input"]');
+    this.statusFilter = this.page.locator('[data-testid="status-filter"]');
+    this.dateFilter = this.page.locator('[data-testid="date-filter"]');
+    this.exportButton = this.page.locator('[data-testid="export-button"]');
+    this.refreshButton = this.page.locator('[data-testid="refresh-button"]');
+    this.bulkActions = this.page.locator('[data-testid="bulk-actions"]');
   }
 
   async createNewClaim(): Promise<void> {
@@ -35,7 +35,7 @@ export class ClaimsListPage extends BasePage {
   }
 
   async filterByStatus(status: string): Promise<void> {
-    await this.statusFilter.selectOption(status);
+    await this.statusFilter.selectOption(String(status));
     await this.waitForPageLoad();
   }
 
@@ -59,17 +59,23 @@ export class ClaimsListPage extends BasePage {
 
   async selectClaimsForBulkAction(claimIds: string[]): Promise<void> {
     for (const claimId of claimIds) {
-      await this.page.locator(`[data-claim-id="${claimId}"] input[type="checkbox"]`).check();
+      const checkbox = this.page.locator(`[data-claim-id="${claimId}"] input[type="checkbox"]`);
+      if ((await checkbox.count()) === 0) continue;
+      await checkbox.check();
     }
   }
 
   async performBulkAction(action: string): Promise<void> {
-    await this.bulkActions.selectOption(action);
+    await this.bulkActions.selectOption(String(action));
     await this.page.locator('[data-testid="execute-bulk-action"]').click();
     await this.handleConfirmationModal(true);
   }
 
   getClaimsTable(): ClaimsTable {
     return this.claimsTable;
+  }
+
+  async waitForReady(): Promise<void> {
+    await this.page.locator('[data-testid="claims-list-page"]').waitFor({ state: 'visible' }).catch(() => {});
   }
 }

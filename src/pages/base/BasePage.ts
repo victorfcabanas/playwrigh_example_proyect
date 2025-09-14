@@ -36,4 +36,8 @@ export abstract class BasePage {
 
     await modal.waitFor({ state: 'hidden' });
   }
+
+  async waitForComponent(testId: string, timeout = 5000): Promise<void> {
+    await this.page.locator(`[data-testid="${testId}"]`).waitFor({ state: 'visible', timeout }).catch(() => {});
+  }
 }

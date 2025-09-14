@@ -43,12 +43,12 @@ export class ClaimDetailsPage extends BasePage {
     estimatedCost: string;
   }> {
     return {
-      number: await this.claimNumber.textContent() || '',
-      status: await this.claimStatus.textContent() || '',
-      customer: await this.customerInfo.locator('[data-testid="customer-name"]').textContent() || '',
-      vehicle: await this.vehicleInfo.locator('[data-testid="vehicle-info-text"]').textContent() || '',
-      incidentDate: await this.incidentDetails.locator('[data-testid="incident-date"]').textContent() || '',
-      estimatedCost: await this.incidentDetails.locator('[data-testid="estimated-cost"]').textContent() || ''
+      number: (await this.claimNumber.textContent() || '').trim(),
+      status: (await this.claimStatus.textContent() || '').trim(),
+      customer: (await this.customerInfo.locator('[data-testid="customer-name"]').textContent() || '').trim(),
+      vehicle: (await this.vehicleInfo.locator('[data-testid="vehicle-info-text"]').textContent() || '').trim(),
+      incidentDate: (await this.incidentDetails.locator('[data-testid="incident-date"]').textContent() || '').trim(),
+      estimatedCost: (await this.incidentDetails.locator('[data-testid="estimated-cost"]').textContent() || '').trim()
     };
   }
 
@@ -95,15 +95,11 @@ export class ClaimDetailsPage extends BasePage {
 
     for (let i = 0; i < count; i++) {
       const item = timelineItems.nth(i);
-      const event = await item.locator('[data-testid="event-description"]').textContent();
-      const timestamp = await item.locator('[data-testid="event-timestamp"]').textContent();
-      const user = await item.locator('[data-testid="event-user"]').textContent();
+      const event = (await item.locator('[data-testid="event-description"]').textContent() || '').trim();
+      const timestamp = (await item.locator('[data-testid="event-timestamp"]').textContent() || '').trim();
+      const user = (await item.locator('[data-testid="event-user"]').textContent() || '').trim();
 
-      events.push({
-        event: event || '',
-        timestamp: timestamp || '',
-        user: user || ''
-      });
+      events.push({ event, timestamp, user });
     }
 
     return events;
@@ -123,5 +119,9 @@ export class ClaimDetailsPage extends BasePage {
     
     // Wait for modal to open
     await this.page.locator('[data-testid="image-modal"]').waitFor({ state: 'visible' });
+  }
+
+  async waitForReady(): Promise<void> {
+    await this.page.locator('[data-testid="claim-details-page"]').waitFor({ state: 'visible' }).catch(() => {});
   }
 }

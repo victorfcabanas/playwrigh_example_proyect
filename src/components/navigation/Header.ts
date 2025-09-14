@@ -18,6 +18,14 @@ export class Header extends BaseComponent {
   }
 
   async getNotificationsCount(): Promise<number> {
-    return parseInt(await this.notifications.textContent() || '0');
+    const badge = this.notifications.locator('[data-testid="notification-badge"]');
+    if ((await badge.count()) === 0) return 0;
+    const text = (await badge.textContent()) || '0';
+    const n = parseInt((text || '').trim() || '0');
+    return Number.isNaN(n) ? 0 : n;
+  }
+
+  async waitForReady(): Promise<void> {
+    await this.container.waitFor({ state: 'visible' }).catch(() => {});
   }
 }

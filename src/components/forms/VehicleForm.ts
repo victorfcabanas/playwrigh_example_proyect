@@ -21,4 +21,13 @@ export class VehicleForm extends BaseComponent {
   async submit(): Promise<void> {
     await this.submitButton.click();
   }
+
+  async clear(): Promise<void> {
+    await this.vinInput.fill('');
+    await this.licensePlateInput.fill('');
+  }
+
+  async waitForReady(): Promise<void> {
+    await this.container.waitFor({ state: 'visible' });
+  }
 }
