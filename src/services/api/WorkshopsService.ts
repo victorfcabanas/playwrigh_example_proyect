@@ -52,7 +52,8 @@ export class WorkshopsService {
       if (filters.limit) params.limit = filters.limit.toString();
     }
 
-    return await this.apiClient.get('/api/v1/workshops', params);
+    // pass params as an options object so ApiClient can attach them correctly
+    return await this.apiClient.get('/api/v1/workshops', { params });
   }
 
   async checkAvailability(workshopId: string, date: string): Promise<APIResponse> {

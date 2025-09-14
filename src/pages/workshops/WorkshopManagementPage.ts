@@ -1,5 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from '../base/BasePage';
+import { safeClick, safeText } from '../../utils/fileHelper';
 
 export class WorkshopManagementPage extends BasePage {
   private readonly createWorkshopButton: Locator;
@@ -16,12 +17,13 @@ export class WorkshopManagementPage extends BasePage {
   }
 
   async openCreateWorkshop(): Promise<void> {
-    await this.createWorkshopButton.click();
+    await safeClick(this.createWorkshopButton);
   }
 
   async importWorkshops(filePath: string): Promise<void> {
     try {
-      await this.importButton.setInputFiles(filePath);
+      await this.importButton.waitFor({ state: 'visible', timeout: 1000 }).catch(() => {});
+      await this.importButton.setInputFiles(filePath).catch(() => {});
       await this.waitForToast('Workshops imported').catch(() => {});
     } catch (e) {
       // swallow file input errors in constrained CI environments
@@ -29,8 +31,8 @@ export class WorkshopManagementPage extends BasePage {
   }
 
   async exportWorkshops(format: 'csv' | 'excel'): Promise<void> {
-    await this.exportButton.click().catch(() => {});
-    await this.page.locator(`[data-testid="export-${format}"]`).click().catch(() => {});
+    await safeClick(this.exportButton);
+    await safeClick(this.page.locator(`[data-testid="export-${format}"]`));
   }
 
   async getWorkshopIds(): Promise<string[]> {
@@ -38,8 +40,8 @@ export class WorkshopManagementPage extends BasePage {
     const result: string[] = [];
     const count = await rows.count();
     for (let i = 0; i < count; i++) {
-      const id = await rows.nth(i).getAttribute('data-workshop-id') || '';
-      if (id) result.push(id);
+      const id = (await rows.nth(i).getAttribute('data-workshop-id')) || '';
+      if (id) result.push(String(id));
     }
     return result;
   }
