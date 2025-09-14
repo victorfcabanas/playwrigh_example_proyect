@@ -7,7 +7,8 @@ export class WorkshopsService {
 
   constructor(request: APIRequestContext, baseURL: string) {
     this.apiClient = new ApiClient(request);
-    (this.apiClient as any).baseURL = baseURL;
+    // prefer the public setter so ApiClient can manage URL building consistently
+    this.apiClient.setBaseURL(baseURL);
   }
 
   setAuthToken(token: string): void {

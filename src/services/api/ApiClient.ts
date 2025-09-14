@@ -20,13 +20,20 @@ export class ApiClient {
   private buildUrl(path: string): string {
     if (!path) return path;
     if (path.startsWith('http://') || path.startsWith('https://')) return path;
-    return this.baseURL ? `${this.baseURL}${path}` : path;
+    // ensure we join baseURL and path without duplicating slashes
+    if (!this.baseURL) return path;
+    const base = this.baseURL.endsWith('/') ? this.baseURL.slice(0, -1) : this.baseURL;
+    const p = path.startsWith('/') ? path : `/${path}`;
+    return `${base}${p}`;
   }
 
   private withAuthHeaders(options: any = {}) {
     const headers = Object.assign({}, options.headers || {});
-    if (this.authToken) headers['authorization'] = `Bearer ${this.authToken}`;
-    return { ...options, headers };
+    // normalize header keys to lower-case to avoid casing issues
+    const normalized: Record<string, any> = {};
+    Object.keys(headers).forEach(k => { normalized[k.toLowerCase()] = headers[k]; });
+    if (this.authToken) normalized['authorization'] = `Bearer ${this.authToken}`;
+    return { ...options, headers: normalized };
   }
 
   async get(path: string, options: any = {}): Promise<APIResponse> {
