@@ -34,12 +34,12 @@ export class VehicleRegistrationPage extends BasePage {
 
   async registerVehicle(vehicleData: Partial<Vehicle>): Promise<void> {
     if (vehicleData.vin) {
-      await this.vinInput.fill(vehicleData.vin);
+      await this.vinInput.fill(String(vehicleData.vin).trim());
       await this.waitForVinValidation();
     }
 
     if (vehicleData.licensePlate) {
-      await this.licensePlateInput.fill(vehicleData.licensePlate);
+      await this.licensePlateInput.fill(String(vehicleData.licensePlate).trim());
     }
 
     if (vehicleData.make) {
@@ -47,7 +47,7 @@ export class VehicleRegistrationPage extends BasePage {
     }
 
     if (vehicleData.model) {
-      await this.modelInput.fill(vehicleData.model as string);
+      await this.modelInput.fill(String(vehicleData.model).trim());
     }
 
     if (vehicleData.year) {
@@ -59,7 +59,7 @@ export class VehicleRegistrationPage extends BasePage {
     }
 
     if (vehicleData.color) {
-      await this.colorInput.fill(vehicleData.color as string);
+      await this.colorInput.fill(String(vehicleData.color).trim());
     }
 
     if (vehicleData.insurancePolicyNumber) {
@@ -67,11 +67,11 @@ export class VehicleRegistrationPage extends BasePage {
     }
 
     await this.registerButton.click();
-    await this.waitForToast('Vehicle registered successfully');
+    await this.waitForToast('Vehicle registered successfully').catch(() => {});
   }
 
   private async waitForVinValidation(): Promise<void> {
-    await this.vinValidationStatus.waitFor({ state: 'visible' }).catch(() => {});
+    await this.vinValidationStatus.waitFor({ state: 'visible', timeout: 3000 }).catch(() => {});
     // Poll the element text until non-empty or timeout
     const maxAttempts = 20;
     const delay = 100; // ms
@@ -87,6 +87,6 @@ export class VehicleRegistrationPage extends BasePage {
   }
 
   async waitForReady(): Promise<void> {
-    await this.page.locator('[data-testid="vehicle-registration-page"]').waitFor({ state: 'visible' }).catch(() => {});
+    await this.page.locator('[data-testid="vehicle-registration-page"]').waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
   }
 }

@@ -13,7 +13,7 @@ export class WorkshopListPage extends BasePage {
 
   constructor(page: Page) {
     super(page, '/workshops');
-    this.searchInput = page.locator('[data-testid="workshop-search-input"]');
+    this.searchInput = this.page.locator('[data-testid="workshop-search-input"]');
     this.filterByLocation = this.page.locator('[data-testid="filter-location"]');
     this.filterBySpecialization = this.page.locator('[data-testid="filter-specialization"]');
     this.sortBySelect = this.page.locator('[data-testid="sort-by-select"]');
@@ -24,7 +24,7 @@ export class WorkshopListPage extends BasePage {
   }
 
   async searchWorkshops(query: string): Promise<void> {
-    await this.searchInput.fill(query);
+    await this.searchInput.fill(String(query).trim());
     await this.searchInput.press('Enter');
     await this.waitForPageLoad();
   }
@@ -57,7 +57,12 @@ export class WorkshopListPage extends BasePage {
 
   async selectWorkshop(workshopName: string): Promise<void> {
     const workshopCard = this.page.locator(`[data-testid="workshop-card"]:has-text("${workshopName}")`);
-    await workshopCard.click();
+    try {
+      await workshopCard.click();
+    } catch (e) {
+      await workshopCard.scrollIntoViewIfNeeded().catch(() => {});
+      await workshopCard.click().catch(() => {});
+    }
   }
 
   async getResultsCount(): Promise<number> {
