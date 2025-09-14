@@ -1,5 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from '../base/BasePage';
+import { safeClick, safeText, parseFirstInt } from '../../utils/fileHelper';
 
 export class WorkshopListPage extends BasePage {
   private readonly searchInput: Locator;
@@ -24,8 +25,8 @@ export class WorkshopListPage extends BasePage {
   }
 
   async searchWorkshops(query: string): Promise<void> {
-    await this.searchInput.fill(String(query).trim());
-    await this.searchInput.press('Enter');
+    await this.searchInput.fill(String(query).trim()).catch(() => {});
+    await this.searchInput.press('Enter').catch(() => {});
     await this.waitForPageLoad();
   }
 
@@ -57,18 +58,12 @@ export class WorkshopListPage extends BasePage {
 
   async selectWorkshop(workshopName: string): Promise<void> {
     const workshopCard = this.page.locator(`[data-testid="workshop-card"]:has-text("${workshopName}")`);
-    try {
-      await workshopCard.click();
-    } catch (e) {
-      await workshopCard.scrollIntoViewIfNeeded().catch(() => {});
-      await workshopCard.click().catch(() => {});
-    }
+    await safeClick(workshopCard);
   }
 
   async getResultsCount(): Promise<number> {
-    const text = (await this.resultsCount.textContent() || '').trim();
-    const match = text.match(/(\d+)/);
-    return match ? parseInt(match[1]) : 0;
+    const text = await safeText(this.resultsCount);
+    return parseFirstInt(text);
   }
 
   async goToNextPage(): Promise<void> {

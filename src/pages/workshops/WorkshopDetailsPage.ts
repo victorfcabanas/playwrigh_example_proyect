@@ -1,5 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from '../base/BasePage';
+import { safeText, safeClick } from '../../utils/fileHelper';
 
 export class WorkshopDetailsPage extends BasePage {
   private readonly nameHeader: Locator;
@@ -24,15 +25,15 @@ export class WorkshopDetailsPage extends BasePage {
   }
 
   async getWorkshopName(): Promise<string> {
-    return ((await this.nameHeader.textContent()) || '').trim();
+    return await safeText(this.nameHeader);
   }
 
   async getAddress(): Promise<string> {
-    return ((await this.addressBlock.textContent()) || '').trim();
+    return await safeText(this.addressBlock);
   }
 
   async getContactInfo(): Promise<string> {
-    return ((await this.contactInfo.textContent()) || '').trim();
+    return await safeText(this.contactInfo);
   }
 
   async getSpecializations(): Promise<string[]> {
@@ -40,15 +41,15 @@ export class WorkshopDetailsPage extends BasePage {
     const result: string[] = [];
     const count = await items.count();
     for (let i = 0; i < count; i++) {
-      result.push(((await items.nth(i).textContent()) || '').trim());
+      result.push(((await items.nth(i).textContent().catch(() => '')) || '').trim());
     }
     return result;
   }
 
   async assignClaim(claimId: string): Promise<void> {
-    await this.assignClaimButton.click().catch(() => {});
+    await safeClick(this.assignClaimButton);
     await this.page.locator('[data-testid="claim-selector"]').selectOption(claimId).catch(() => {});
-    await this.page.locator('[data-testid="confirm-assign"]').click().catch(() => {});
+    await safeClick(this.page.locator('[data-testid="confirm-assign"]'));
     await this.waitForToast('Claim assigned to workshop').catch(() => {});
   }
 
