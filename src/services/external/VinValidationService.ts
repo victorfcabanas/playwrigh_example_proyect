@@ -6,11 +6,20 @@ export class VinValidationService {
 
   constructor(request: APIRequestContext, baseURL: string) {
     this.apiClient = new ApiClient(request);
-    (this.apiClient as any).baseURL = baseURL;
+    // prefer ApiClient's setter if present, otherwise fall back to storing
+    if (typeof (this.apiClient as any).setBaseURL === 'function') {
+      (this.apiClient as any).setBaseURL(baseURL);
+    } else {
+      (this.apiClient as any).baseURL = baseURL;
+    }
   }
 
   async validateVin(vin: string): Promise<APIResponse> {
-    return await this.apiClient.get(`/api/v1/validate/${vin}`);
+    try {
+      return await this.apiClient.get(`/api/v1/validate/${vin}`);
+    } catch (e) {
+      throw e;
+    }
   }
 
   async decodeVin(vin: string): Promise<APIResponse> {
@@ -26,10 +35,8 @@ export class VinValidationService {
   }
 
   async getMarketValue(vin: string, mileage: number, condition: string): Promise<APIResponse> {
-    return await this.apiClient.get(`/api/v1/market-value/${vin}`, {
-      mileage: mileage.toString(),
-      condition
-    });
+    const params = { mileage: String(mileage), condition };
+    return await this.apiClient.get(`/api/v1/market-value/${vin}`, { params } as any);
   }
 
   async getMaintenanceHistory(vin: string): Promise<APIResponse> {

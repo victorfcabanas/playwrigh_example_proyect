@@ -6,8 +6,11 @@ export class InsuranceApiClient {
 
   constructor(request: APIRequestContext, baseURL: string) {
     this.apiClient = new ApiClient(request);
-    // store baseURL for convenience; ApiClient currently does not accept baseURL
-    (this.apiClient as any).baseURL = baseURL;
+    if (typeof (this.apiClient as any).setBaseURL === 'function') {
+      (this.apiClient as any).setBaseURL(baseURL);
+    } else {
+      (this.apiClient as any).baseURL = baseURL;
+    }
   }
 
   setAuthToken(token: string): void {
@@ -15,17 +18,20 @@ export class InsuranceApiClient {
   }
 
   async validatePolicy(policyNumber: string, vin: string): Promise<APIResponse> {
-    return await this.apiClient.get('/api/v1/validate-policy', {
-      policyNumber,
-      vin
-    });
+    try {
+      const params = { policyNumber, vin };
+      return await this.apiClient.get('/api/v1/validate-policy', { params } as any);
+    } catch (e) {
+      throw e;
+    }
   }
 
   async checkCoverage(policyNumber: string, claimAmount: number): Promise<APIResponse> {
-    return await this.apiClient.post('/api/v1/coverage-check', {
-      policyNumber,
-      claimAmount
-    });
+    try {
+      return await this.apiClient.post('/api/v1/coverage-check', { policyNumber, claimAmount });
+    } catch (e) {
+      throw e;
+    }
   }
 
   async submitClaim(claimData: {
@@ -41,7 +47,11 @@ export class InsuranceApiClient {
   }
 
   async getClaimStatus(externalClaimId: string): Promise<APIResponse> {
-    return await this.apiClient.get(`/api/v1/claims/${externalClaimId}/status`);
+    try {
+      return await this.apiClient.get(`/api/v1/claims/${externalClaimId}/status`);
+    } catch (e) {
+      throw e;
+    }
   }
 
   async fraudCheck(claimData: {
@@ -54,10 +64,18 @@ export class InsuranceApiClient {
   }
 
   async getPolicyDetails(policyNumber: string): Promise<APIResponse> {
-    return await this.apiClient.get(`/api/v1/policies/${policyNumber}`);
+    try {
+      return await this.apiClient.get(`/api/v1/policies/${policyNumber}`);
+    } catch (e) {
+      throw e;
+    }
   }
 
   async updateClaimStatus(externalClaimId: string, status: string): Promise<APIResponse> {
-    return await this.apiClient.put(`/api/v1/claims/${externalClaimId}/status`, { status });
+    try {
+      return await this.apiClient.put(`/api/v1/claims/${externalClaimId}/status`, { status });
+    } catch (e) {
+      throw e;
+    }
   }
 }
