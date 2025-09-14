@@ -14,6 +14,7 @@ export class UserFactory {
       lastName,
       email,
       role,
+      createdAt: overrides.createdAt ?? new Date(),
       updatedAt: overrides.updatedAt ?? new Date(),
     } as User;
   }

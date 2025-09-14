@@ -17,7 +17,7 @@ export class VehicleFactory {
       model,
       year,
       type,
-      ownerId: overrides.ownerId ?? null,
+      ownerId: overrides.ownerId ?? undefined,
     } as Vehicle;
   }
 }
