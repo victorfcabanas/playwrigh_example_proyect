@@ -7,7 +7,7 @@ export class VehiclesService {
 
   constructor(request: APIRequestContext, baseURL: string) {
     this.apiClient = new ApiClient(request);
-    (this.apiClient as any).baseURL = baseURL;
+    this.apiClient.setBaseURL(baseURL);
   }
 
   setAuthToken(token: string): void {
@@ -49,7 +49,7 @@ export class VehiclesService {
       if (filters.limit) params.limit = filters.limit.toString();
     }
 
-    return await this.apiClient.get('/api/v1/vehicles', params);
+    return await this.apiClient.get('/api/v1/vehicles', { params });
   }
 
   async validateVin(vin: string): Promise<APIResponse> {

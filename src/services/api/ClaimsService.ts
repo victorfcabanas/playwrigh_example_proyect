@@ -7,7 +7,7 @@ export class ClaimsService {
 
   constructor(request: APIRequestContext, baseURL: string) {
     this.apiClient = new ApiClient(request);
-    (this.apiClient as any).baseURL = baseURL;
+    this.apiClient.setBaseURL(baseURL);
   }
 
   setAuthToken(token: string) {
@@ -38,6 +38,6 @@ export class ClaimsService {
       if (filters.page) params.page = String(filters.page);
       if (filters.limit) params.limit = String(filters.limit);
     }
-    return await this.apiClient.get('/api/v1/claims', params);
+    return await this.apiClient.get('/api/v1/claims', { params });
   }
 }

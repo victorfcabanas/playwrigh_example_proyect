@@ -7,7 +7,7 @@ export class UsersService {
 
   constructor(request: APIRequestContext, baseURL: string) {
     this.apiClient = new ApiClient(request);
-    (this.apiClient as any).baseURL = baseURL;
+    this.apiClient.setBaseURL(baseURL);
   }
 
   setAuthToken(token: string): void {
@@ -37,6 +37,6 @@ export class UsersService {
       if (filters.page) params.page = filters.page.toString();
       if (filters.limit) params.limit = filters.limit.toString();
     }
-    return await this.apiClient.get('/api/v1/users', params);
+    return await this.apiClient.get('/api/v1/users', { params });
   }
 }
