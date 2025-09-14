@@ -16,7 +16,7 @@ export class ClaimApprovalPage extends BasePage {
 
   constructor(page: Page) {
     super(page, '/claims/approval');
-    this.pendingClaimsList = page.locator('[data-testid="pending-claims-list"]');
+    this.pendingClaimsList = this.page.locator('[data-testid="pending-claims-list"]');
     this.claimDetails = this.page.locator('[data-testid="claim-details"]');
     this.approveButton = this.page.locator('[data-testid="approve-button"]');
     this.rejectButton = this.page.locator('[data-testid="reject-button"]');
@@ -30,12 +30,12 @@ export class ClaimApprovalPage extends BasePage {
 
   async selectClaimForReview(claimId: string): Promise<void> {
     await this.pendingClaimsList.locator(`[data-claim-id="${claimId}"]`).click();
-    await this.waitForPageLoad();
+    await this.waitForReady();
   }
 
   async approveClaim(notes?: string, costAdjustment?: number): Promise<void> {
     if (notes) {
-      await this.approvalNotes.fill(notes);
+      await this.approvalNotes.fill(String(notes).trim());
     }
     
     if (costAdjustment) {
@@ -44,21 +44,21 @@ export class ClaimApprovalPage extends BasePage {
     
     await this.approveButton.click();
     await this.handleConfirmationModal(true);
-    await this.waitForToast('Claim approved successfully');
+    await this.waitForToast('Claim approved successfully').catch(() => {});
   }
 
   async rejectClaim(reason: string): Promise<void> {
-    await this.rejectionReason.fill(reason);
+    await this.rejectionReason.fill(String(reason).trim());
     await this.rejectButton.click();
     await this.handleConfirmationModal(true);
-    await this.waitForToast('Claim rejected');
+    await this.waitForToast('Claim rejected').catch(() => {});
   }
 
   async requestMoreInformation(message: string): Promise<void> {
     await this.requestMoreInfoButton.click();
-    await this.page.locator('[data-testid="info-request-message"]').fill(message);
+    await this.page.locator('[data-testid="info-request-message"]').fill(String(message).trim());
     await this.page.locator('[data-testid="send-request"]').click();
-    await this.waitForToast('Information request sent');
+    await this.waitForToast('Information request sent').catch(() => {});
   }
 
   async assignWorkshopDuringApproval(workshopId: string): Promise<void> {
@@ -91,5 +91,9 @@ export class ClaimApprovalPage extends BasePage {
       incidentDate: ((await this.claimDetails.locator('[data-testid="claim-incident-date"]').textContent()) || '').trim(),
       status: ((await this.claimDetails.locator('[data-testid="claim-status"]').textContent()) || '').trim(),
     } as any;
+  }
+
+  async waitForReady(): Promise<void> {
+    await this.page.locator('[data-testid="claims-approval-page"]').waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
   }
 }

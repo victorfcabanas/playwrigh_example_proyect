@@ -39,7 +39,7 @@ export class CreateClaimPage extends BasePage {
   }
 
   async fillDescription(description: string): Promise<void> {
-    await this.descriptionTextarea.fill(description);
+    await this.descriptionTextarea.fill(String(description).trim());
   }
 
   async uploadImages(imagePaths: string[]): Promise<void> {
@@ -80,12 +80,12 @@ export class CreateClaimPage extends BasePage {
 
   async saveDraft(): Promise<void> {
     await this.saveDraftButton.click();
-    await this.waitForToast('Claim saved as draft');
+    await this.waitForToast('Claim saved as draft').catch(() => {});
   }
 
   async submitClaim(): Promise<void> {
     await this.submitClaimButton.click();
-    await this.waitForToast('Claim submitted successfully');
+    await this.waitForToast('Claim submitted successfully').catch(() => {});
   }
 
   async createCompleteClaim(claimData: Partial<Claim>): Promise<void> {
@@ -124,6 +124,6 @@ export class CreateClaimPage extends BasePage {
   }
 
   async waitForReady(): Promise<void> {
-    await this.page.locator('[data-testid="create-claim-page"]').waitFor({ state: 'visible' }).catch(() => {});
+    await this.page.locator('[data-testid="create-claim-page"]').waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
   }
 }

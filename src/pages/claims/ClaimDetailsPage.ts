@@ -110,7 +110,7 @@ export class ClaimDetailsPage extends BasePage {
     await documentLink.click();
     
     // Wait for download to start
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(1000);
   }
 
   async viewImage(imageIndex: number): Promise<void> {
@@ -118,10 +118,10 @@ export class ClaimDetailsPage extends BasePage {
     await imageThumb.click();
     
     // Wait for modal to open
-    await this.page.locator('[data-testid="image-modal"]').waitFor({ state: 'visible' }).catch(() => {});
+    await this.page.locator('[data-testid="image-modal"]').waitFor({ state: 'visible', timeout: 3000 }).catch(() => {});
   }
 
   async waitForReady(): Promise<void> {
-    await this.page.locator('[data-testid="claim-details-page"]').waitFor({ state: 'visible' }).catch(() => {});
+    await this.page.locator('[data-testid="claim-details-page"]').waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
   }
 }
