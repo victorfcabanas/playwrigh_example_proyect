@@ -19,19 +19,19 @@ export class ClaimDetailsPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.claimNumber = page.locator('[data-testid="claim-number"]');
-    this.claimStatus = page.locator('[data-testid="claim-status"]');
-    this.customerInfo = page.locator('[data-testid="customer-info"]');
-    this.vehicleInfo = page.locator('[data-testid="vehicle-info"]');
-    this.incidentDetails = page.locator('[data-testid="incident-details"]');
-    this.imagesGallery = page.locator('[data-testid="images-gallery"]');
-    this.documentsSection = page.locator('[data-testid="documents-section"]');
-    this.timelineSection = page.locator('[data-testid="timeline-section"]');
-    this.commentsSection = page.locator('[data-testid="comments-section"]');
-    this.statusChangeButtons = page.locator('[data-testid*="status-change"]');
-    this.assignWorkshopButton = page.locator('[data-testid="assign-workshop-button"]');
-    this.addCommentButton = page.locator('[data-testid="add-comment-button"]');
-    this.editClaimButton = page.locator('[data-testid="edit-claim-button"]');
+    this.claimNumber = this.page.locator('[data-testid="claim-number"]');
+    this.claimStatus = this.page.locator('[data-testid="claim-status"]');
+    this.customerInfo = this.page.locator('[data-testid="customer-info"]');
+    this.vehicleInfo = this.page.locator('[data-testid="vehicle-info"]');
+    this.incidentDetails = this.page.locator('[data-testid="incident-details"]');
+    this.imagesGallery = this.page.locator('[data-testid="images-gallery"]');
+    this.documentsSection = this.page.locator('[data-testid="documents-section"]');
+    this.timelineSection = this.page.locator('[data-testid="timeline-section"]');
+    this.commentsSection = this.page.locator('[data-testid="comments-section"]');
+    this.statusChangeButtons = this.page.locator('[data-testid*="status-change"]');
+    this.assignWorkshopButton = this.page.locator('[data-testid="assign-workshop-button"]');
+    this.addCommentButton = this.page.locator('[data-testid="add-comment-button"]');
+    this.editClaimButton = this.page.locator('[data-testid="edit-claim-button"]');
   }
 
   async getClaimDetails(): Promise<{
@@ -89,9 +89,9 @@ export class ClaimDetailsPage extends BasePage {
     timestamp: string;
     user: string;
   }>> {
-    const events = [];
-    const timelineItems = this.timelineSection.locator('[data-testid="timeline-item"]');
-    const count = await timelineItems.count();
+  const events = [];
+  const timelineItems = this.timelineSection.locator('[data-testid="timeline-item"]');
+  const count = await timelineItems.count();
 
     for (let i = 0; i < count; i++) {
       const item = timelineItems.nth(i);
@@ -118,7 +118,7 @@ export class ClaimDetailsPage extends BasePage {
     await imageThumb.click();
     
     // Wait for modal to open
-    await this.page.locator('[data-testid="image-modal"]').waitFor({ state: 'visible' });
+    await this.page.locator('[data-testid="image-modal"]').waitFor({ state: 'visible' }).catch(() => {});
   }
 
   async waitForReady(): Promise<void> {

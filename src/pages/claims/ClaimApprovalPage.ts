@@ -17,15 +17,15 @@ export class ClaimApprovalPage extends BasePage {
   constructor(page: Page) {
     super(page, '/claims/approval');
     this.pendingClaimsList = page.locator('[data-testid="pending-claims-list"]');
-    this.claimDetails = page.locator('[data-testid="claim-details"]');
-    this.approveButton = page.locator('[data-testid="approve-button"]');
-    this.rejectButton = page.locator('[data-testid="reject-button"]');
-    this.requestMoreInfoButton = page.locator('[data-testid="request-info-button"]');
-    this.assignWorkshopButton = page.locator('[data-testid="assign-workshop-button"]');
-    this.approvalNotes = page.locator('[data-testid="approval-notes"]');
-    this.rejectionReason = page.locator('[data-testid="rejection-reason"]');
-    this.estimatedCostAdjustment = page.locator('[data-testid="cost-adjustment"]');
-    this.priorityLevel = page.locator('[data-testid="priority-level"]');
+    this.claimDetails = this.page.locator('[data-testid="claim-details"]');
+    this.approveButton = this.page.locator('[data-testid="approve-button"]');
+    this.rejectButton = this.page.locator('[data-testid="reject-button"]');
+    this.requestMoreInfoButton = this.page.locator('[data-testid="request-info-button"]');
+    this.assignWorkshopButton = this.page.locator('[data-testid="assign-workshop-button"]');
+    this.approvalNotes = this.page.locator('[data-testid="approval-notes"]');
+    this.rejectionReason = this.page.locator('[data-testid="rejection-reason"]');
+    this.estimatedCostAdjustment = this.page.locator('[data-testid="cost-adjustment"]');
+    this.priorityLevel = this.page.locator('[data-testid="priority-level"]');
   }
 
   async selectClaimForReview(claimId: string): Promise<void> {
@@ -85,8 +85,11 @@ export class ClaimApprovalPage extends BasePage {
     await this.selectClaimForReview(claimId);
     
     return {
-      claimNumber: await this.claimDetails.locator('[data-testid="claim-number"]').textContent() || '',
-      status: await this.claimDetails.locator('[data-testid="claim-status"]').textContent() || ''
+      claimNumber: ((await this.claimDetails.locator('[data-testid="claim-number"]').textContent()) || '').trim(),
+      customer: ((await this.claimDetails.locator('[data-testid="claim-customer"]').textContent()) || '').trim(),
+      estimatedCost: ((await this.claimDetails.locator('[data-testid="claim-estimated-cost"]').textContent()) || '').trim(),
+      incidentDate: ((await this.claimDetails.locator('[data-testid="claim-incident-date"]').textContent()) || '').trim(),
+      status: ((await this.claimDetails.locator('[data-testid="claim-status"]').textContent()) || '').trim(),
     } as any;
   }
 }
