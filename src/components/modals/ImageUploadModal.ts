@@ -18,15 +18,19 @@ export class ImageUploadModal {
   }
 
   async open(): Promise<void> {
-    await this.modalRoot.locator('[data-testid="open-upload-modal"]').click().catch(() => {});
+    const opener = this.page.locator('[data-testid="open-upload-modal"]');
+    await opener.waitFor({ state: 'visible', timeout: 1000 }).catch(() => {});
+    await opener.click().catch(() => {});
     await this.modalRoot.waitFor({ state: 'visible', timeout: 3000 }).catch(() => {});
   }
 
   async uploadImages(paths: string[]): Promise<void> {
     for (const p of paths) {
       try {
+        await this.fileInput.waitFor({ state: 'visible', timeout: 1000 }).catch(() => {});
         await this.fileInput.setInputFiles(p);
-        await this.uploadButton.click();
+        await this.uploadButton.waitFor({ state: 'visible', timeout: 1000 }).catch(() => {});
+        await this.uploadButton.click().catch(() => {});
         // wait briefly for upload to register in UI
         await this.page.waitForTimeout(500);
       } catch (e) {
@@ -46,11 +50,14 @@ export class ImageUploadModal {
   }
 
   async removeImage(imageName: string): Promise<void> {
-    await this.uploadedList.locator(`li:has-text("${imageName}") [data-testid="remove-image"]`).click().catch(() => {});
+    const removeBtn = this.uploadedList.locator(`li:has-text("${imageName}") [data-testid="remove-image"]`);
+    await removeBtn.waitFor({ state: 'visible', timeout: 1000 }).catch(() => {});
+    await removeBtn.click().catch(() => {});
     await this.page.waitForTimeout(300).catch(() => {});
   }
 
   async close(): Promise<void> {
-    await this.closeButton.click();
+    await this.closeButton.waitFor({ state: 'visible', timeout: 1000 }).catch(() => {});
+    await this.closeButton.click().catch(() => {});
   }
 }

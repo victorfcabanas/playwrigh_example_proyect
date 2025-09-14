@@ -14,16 +14,19 @@ export class ConfirmationModal extends BaseComponent {
   }
 
   async confirm(): Promise<void> {
+    await this.yesButton.waitFor({ state: 'visible', timeout: 1000 }).catch(() => {});
     await this.yesButton.click().catch(() => {});
     await this.container.waitFor({ state: 'hidden', timeout: 3000 }).catch(() => {});
   }
 
   async cancel(): Promise<void> {
+    await this.noButton.waitFor({ state: 'visible', timeout: 1000 }).catch(() => {});
     await this.noButton.click().catch(() => {});
     await this.container.waitFor({ state: 'hidden', timeout: 3000 }).catch(() => {});
   }
 
   async getMessage(): Promise<string> {
-    return ((await this.message.textContent()) || '').trim();
+    const text = (await this.message.textContent().catch(() => '')) || '';
+    return text.trim();
   }
 }
