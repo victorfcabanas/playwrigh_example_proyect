@@ -1,0 +1,17 @@
+{
+  "name": "playwright-claims-claude",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:ci": "playwright test --reporter=list,html",
+    "test:debug": "playwright test --debug",
+    "build": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "typescript": "^5.2.2",
+    "dotenv": "^16.0.0",
+    "@faker-js/faker": "^8.0.0"
+  }
+}

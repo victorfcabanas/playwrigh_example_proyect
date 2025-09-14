@@ -1,0 +1,8 @@
+export enum ClaimStatus {
+  DRAFT = 'DRAFT',
+  CLOSED = 'CLOSED',
+  SUBMITTED = 'SUBMITTED',
+  IN_REPAIR = 'IN_REPAIR',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED'
+}
