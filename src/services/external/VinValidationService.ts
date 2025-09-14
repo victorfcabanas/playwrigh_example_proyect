@@ -5,7 +5,8 @@ export class VinValidationService {
   private apiClient: ApiClient;
 
   constructor(request: APIRequestContext, baseURL: string) {
-    this.apiClient = new ApiClient(request, baseURL);
+    this.apiClient = new ApiClient(request);
+    (this.apiClient as any).baseURL = baseURL;
   }
 
   async validateVin(vin: string): Promise<APIResponse> {

@@ -29,12 +29,12 @@ export class WorkshopListPage extends BasePage {
     await this.waitForPageLoad();
   }
 
-  async filterByLocation(location: string): Promise<void> {
+  async applyFilterByLocation(location: string): Promise<void> {
     await this.filterByLocation.selectOption(location);
     await this.waitForPageLoad();
   }
 
-  async filterBySpecialization(specialization: string): Promise<void> {
+  async applyFilterBySpecialization(specialization: string): Promise<void> {
     await this.filterBySpecialization.selectOption(specialization);
     await this.waitForPageLoad();
   }

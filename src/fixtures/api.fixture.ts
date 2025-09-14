@@ -11,18 +11,24 @@ type ApiFixtures = {
 
 export const apiTest = base.extend<ApiFixtures>({
   claimsService: async ({ request }, use) => {
-    const baseURL = process.env.API_BASE_URL || 'https://api.example.com';
-    await use(claimsService);
+    const claimsBaseURL = process.env.API_BASE_URL || 'https://api.example.com';
+    const svc = new ClaimsService(request, claimsBaseURL);
+    svc.setAuthToken(process.env.API_TEST_TOKEN || '');
+    await use(svc);
   },
 
   workshopsService: async ({ request }, use) => {
-    const baseURL = process.env.API_BASE_URL || 'https://api.example.com';
-    await use(workshopsService);
+  const workshopsBaseURL = process.env.API_BASE_URL || 'https://api.example.com';
+  const svc = new WorkshopsService(request, workshopsBaseURL);
+    svc.setAuthToken(process.env.API_TEST_TOKEN || '');
+    await use(svc);
   },
 
   authService: async ({ request }, use) => {
-    const baseURL = process.env.API_BASE_URL || 'https://api.example.com';
-    await use(authService);
+  const authBaseURL = process.env.API_BASE_URL || 'https://api.example.com';
+  const svc = new AuthService(request, authBaseURL);
+    // AuthService handles auth flows via login/register; do not set token here.
+    await use(svc);
   },
 });
 

@@ -9,6 +9,7 @@ export type Vehicle = {
 	model?: string;
 	year?: number;
 	type?: VehicleType;
+	ownerId?: string;
 	color?: string;
 	mileage?: number;
 	insurancePolicyNumber?: string;

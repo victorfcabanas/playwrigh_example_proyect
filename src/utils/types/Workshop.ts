@@ -8,3 +8,10 @@ export interface Workshop {
   currentLoad?: number;
   rating?: number;
 }
+
+export enum VehicleType {
+  CAR = 'car',
+  TRUCK = 'truck',
+  MOTORCYCLE = 'motorcycle',
+  OTHER = 'other'
+}

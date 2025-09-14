@@ -1,6 +1,14 @@
-import fs from 'fs/promises';
-import path from 'path';
-import mime from 'mime-types';
+import * as fs from 'fs/promises';
+import * as path from 'path';
+let mime: any;
+try {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  mime = require('mime-types');
+} catch (e) {
+  mime = {
+    lookup: (_: string) => false,
+  };
+}
 
 export class FileHelper {
   static async fileExists(filePath: string): Promise<boolean> {

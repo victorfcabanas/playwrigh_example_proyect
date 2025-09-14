@@ -1,20 +1,28 @@
 import { faker } from '@faker-js/faker';
-import { User } from '../utils/types/User';
+import { User, UserRole } from '../utils/types/User';
 
 export class UserFactory {
   static create(overrides: Partial<User> = {}): User {
+    const firstName = overrides.firstName || faker.person.firstName();
+    const lastName = overrides.lastName || faker.person.lastName();
+    const email = overrides.email || faker.internet.email({ firstName, lastName });
+    const role = overrides.role || UserRole.CUSTOMER;
+
     return {
-      id: faker.string.uuid(),
-      updatedAt: new Date(),
-      ...overrides
+      id: overrides.id ?? faker.string.uuid(),
+      firstName,
+      lastName,
+      email,
+      role,
+      updatedAt: overrides.updatedAt ?? new Date(),
     } as User;
   }
 
-  static createCustomer(): User {
-    return this.create({});
+  static createCustomer(overrides: Partial<User> = {}): User {
+    return this.create({ role: UserRole.CUSTOMER, ...overrides });
   }
 
-  static createAdmin(): User {
-    return this.create({});
+  static createAdmin(overrides: Partial<User> = {}): User {
+    return this.create({ role: UserRole.ADMIN, ...overrides });
   }
 }

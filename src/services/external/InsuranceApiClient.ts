@@ -5,7 +5,9 @@ export class InsuranceApiClient {
   private apiClient: ApiClient;
 
   constructor(request: APIRequestContext, baseURL: string) {
-    this.apiClient = new ApiClient(request, baseURL);
+    this.apiClient = new ApiClient(request);
+    // store baseURL for convenience; ApiClient currently does not accept baseURL
+    (this.apiClient as any).baseURL = baseURL;
   }
 
   setAuthToken(token: string): void {
