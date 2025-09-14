@@ -1,0 +1,10 @@
+{
+  "sampleWorkshops": [
+    {
+      "id": "workshop-001",
+      "name": "Main St Workshop",
+      "capacity": 10,
+      "rating": 4.6
+    }
+  ]
+}

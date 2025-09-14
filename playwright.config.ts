@@ -21,10 +21,17 @@ export default defineConfig({
 
   projects: [
     // API Tests
-    },
+    // Add your project configurations here, for example:
+    // {
+    //   name: 'API Tests',
+    //   testMatch: /.*api\.spec\.ts/,
+    // },
   ],
 
-  webServer: [
-    {…}
-  ],
+  webServer: {
+    command: 'npm run start',
+    port: 3000,
+    timeout: 120 * 1000,
+    reuseExistingServer: !process.env.CI,
+  },
 });

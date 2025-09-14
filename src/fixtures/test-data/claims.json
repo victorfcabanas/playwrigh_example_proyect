@@ -1,0 +1,12 @@
+{
+  "sampleClaims": [
+    {
+      "id": "claim-001",
+      "claimNumber": "CLM-100001",
+      "customerId": "customer-001",
+      "vehicleId": "vehicle-001",
+      "status": "SUBMITTED",
+      "estimatedCost": 1200
+    }
+  ]
+}

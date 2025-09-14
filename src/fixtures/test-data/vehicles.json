@@ -1,0 +1,11 @@
+{
+  "sampleVehicles": [
+    {
+      "id": "vehicle-001",
+      "vin": "1HGCM82633A004352",
+      "make": "Honda",
+      "model": "Accord",
+      "year": 2018
+    }
+  ]
+}

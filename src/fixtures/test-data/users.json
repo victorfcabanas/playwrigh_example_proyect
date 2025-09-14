@@ -1,0 +1,11 @@
+{
+  "sampleUsers": [
+    {
+      "id": "user-001",
+      "email": "user@example.com",
+      "firstName": "Jane",
+      "lastName": "Doe",
+      "role": "CUSTOMER"
+    }
+  ]
+}
