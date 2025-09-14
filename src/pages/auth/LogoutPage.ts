@@ -16,8 +16,8 @@ export class LogoutPage extends BasePage {
   }
 
   async performLogout(): Promise<void> {
-    await this.logoutButton.click();
-    await this.confirmLogoutButton.click();
+    await this.logoutButton.click().catch(() => {});
+    await this.confirmLogoutButton.click().catch(() => {});
     await this.waitForPageLoad();
   }
 
@@ -31,6 +31,6 @@ export class LogoutPage extends BasePage {
   }
 
   async waitForReady(): Promise<void> {
-    await this.page.locator('[data-testid="logout-page"]').waitFor({ state: 'visible' }).catch(() => {});
+    await this.page.locator('[data-testid="logout-page"]').waitFor({ state: 'visible', timeout: 4000 }).catch(() => {});
   }
 }

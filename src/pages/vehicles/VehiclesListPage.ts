@@ -18,7 +18,8 @@ export class VehiclesListPage extends BasePage {
   }
 
   async search(query: string): Promise<void> {
-    await this.searchInput.fill(query);
+    await this.searchInput.fill(String(query).trim());
+    // Allow network activity to settle after search
     await this.page.waitForLoadState('networkidle');
   }
 
@@ -32,6 +33,6 @@ export class VehiclesListPage extends BasePage {
   }
 
   async waitForReady(): Promise<void> {
-    await this.listContainer.waitFor({ state: 'visible' }).catch(() => {});
+    await this.listContainer.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
   }
 }
