@@ -13,14 +13,16 @@ export const apiTest = base.extend<ApiFixtures>({
   claimsService: async ({ request }, use) => {
     const claimsBaseURL = process.env.API_BASE_URL || 'https://api.example.com';
     const svc = new ClaimsService(request, claimsBaseURL);
-    svc.setAuthToken(process.env.API_TEST_TOKEN || '');
+    const token = process.env.API_TEST_TOKEN;
+    if (token) svc.setAuthToken(token);
     await use(svc);
   },
 
   workshopsService: async ({ request }, use) => {
   const workshopsBaseURL = process.env.API_BASE_URL || 'https://api.example.com';
   const svc = new WorkshopsService(request, workshopsBaseURL);
-    svc.setAuthToken(process.env.API_TEST_TOKEN || '');
+    const token2 = process.env.API_TEST_TOKEN;
+    if (token2) svc.setAuthToken(token2);
     await use(svc);
   },
 
