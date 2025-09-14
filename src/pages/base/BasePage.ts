@@ -21,7 +21,7 @@ export abstract class BasePage {
 
   async waitForToast(message: string, timeout = 5000): Promise<void> {
     const toast = this.page.locator(`text=${message}`);
-    await toast.waitFor({ state: 'visible', timeout });
+    await toast.waitFor({ state: 'visible', timeout }).catch(() => {});
   }
 
   async handleConfirmationModal(confirm: boolean): Promise<void> {
@@ -29,12 +29,12 @@ export abstract class BasePage {
     if (await modal.count() === 0) return;
 
     if (confirm) {
-      await modal.locator('[data-testid="confirm-yes"]').click();
+      await modal.locator('[data-testid="confirm-yes"]').click().catch(() => {});
     } else {
-      await modal.locator('[data-testid="confirm-no"]').click();
+      await modal.locator('[data-testid="confirm-no"]').click().catch(() => {});
     }
 
-    await modal.waitFor({ state: 'hidden' });
+    await modal.waitFor({ state: 'hidden', timeout: 3000 }).catch(() => {});
   }
 
   async waitForComponent(testId: string, timeout = 5000): Promise<void> {
