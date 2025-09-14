@@ -34,9 +34,10 @@ export class UsersService {
     const params: Record<string, string> = {};
     if (filters) {
       if (filters.role) params.role = filters.role;
-      if (filters.page) params.page = filters.page.toString();
-      if (filters.limit) params.limit = filters.limit.toString();
+      if (filters.page) params.page = String(filters.page);
+      if (filters.limit) params.limit = String(filters.limit);
     }
-    return await this.apiClient.get('/api/v1/users', { params });
+    const options = Object.keys(params).length ? { params } : undefined;
+    return await this.apiClient.get('/api/v1/users', options as any);
   }
 }

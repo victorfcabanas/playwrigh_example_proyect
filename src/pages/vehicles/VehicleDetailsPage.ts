@@ -61,6 +61,6 @@ export class VehicleDetailsPage extends BasePage {
   }
 
   async waitForReady(): Promise<void> {
-    await this.page.locator('[data-testid="vehicle-details-page"]').waitFor({ state: 'visible' }).catch(() => {});
+    await this.page.locator('[data-testid="vehicle-details-page"]').waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
   }
 }
