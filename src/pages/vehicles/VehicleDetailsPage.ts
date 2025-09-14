@@ -11,7 +11,7 @@ export class VehicleDetailsPage extends BasePage {
   private readonly deleteButton: Locator;
 
   constructor(page: Page) {
-    super(page);
+    super(page, '/vehicles');
     this.vehicleInfo = this.page.locator('[data-testid="vehicle-info"]');
     this.ownerInfo = this.page.locator('[data-testid="owner-info"]');
     this.insuranceInfo = this.page.locator('[data-testid="insurance-info"]');

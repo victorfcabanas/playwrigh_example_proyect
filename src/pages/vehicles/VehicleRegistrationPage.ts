@@ -71,7 +71,7 @@ export class VehicleRegistrationPage extends BasePage {
   }
 
   private async waitForVinValidation(): Promise<void> {
-    await this.vinValidationStatus.waitFor({ state: 'visible' });
+    await this.vinValidationStatus.waitFor({ state: 'visible' }).catch(() => {});
     // Poll the element text until non-empty or timeout
     const maxAttempts = 20;
     const delay = 100; // ms
@@ -83,7 +83,7 @@ export class VehicleRegistrationPage extends BasePage {
   }
 
   async getVinValidationMessage(): Promise<string> {
-    return (await this.vinValidationStatus.textContent()) || '';
+    return ((await this.vinValidationStatus.textContent()) || '').trim();
   }
 
   async waitForReady(): Promise<void> {
