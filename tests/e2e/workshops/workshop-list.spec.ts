@@ -13,6 +13,7 @@ test('Workshop list shows results and can search', async ({ page }) => {
   const resultsBefore = await workshopList.getResultsCount();
   await workshopList.searchWorkshops('Downtown');
   const resultsAfter = await workshopList.getResultsCount();
-
+  // expect that search does not reduce the overall count below zero and ideally not less than before
   expect(resultsAfter).toBeGreaterThanOrEqual(0);
+  expect(resultsAfter).toBeGreaterThanOrEqual(resultsBefore - 1); // allow for small pagination differences
 });

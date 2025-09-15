@@ -32,7 +32,8 @@ export class ApiClient {
     // normalize header keys to lower-case to avoid casing issues
     const normalized: Record<string, any> = {};
     Object.keys(headers).forEach(k => { normalized[k.toLowerCase()] = headers[k]; });
-    if (this.authToken) normalized['authorization'] = `Bearer ${this.authToken}`;
+    // only set authorization header when we have a token and no explicit authorization provided
+    if (this.authToken && !normalized['authorization']) normalized['authorization'] = `Bearer ${this.authToken}`;
     return { ...options, headers: normalized };
   }
 
@@ -43,12 +44,14 @@ export class ApiClient {
 
   async post(path: string, data: any, options: any = {}): Promise<APIResponse> {
     const url = this.buildUrl(path);
-    return await this.request.post(url, { data, ...this.withAuthHeaders(options) });
+    const opts = this.withAuthHeaders(options);
+    return await this.request.post(url, { data, ...opts });
   }
 
   async put(path: string, data: any, options: any = {}): Promise<APIResponse> {
     const url = this.buildUrl(path);
-    return await this.request.put(url, { data, ...this.withAuthHeaders(options) });
+    const opts = this.withAuthHeaders(options);
+    return await this.request.put(url, { data, ...opts });
   }
 
   async delete(path: string, options: any = {}): Promise<APIResponse> {
