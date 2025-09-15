@@ -41,15 +41,16 @@ export class WorkshopsService {
     limit?: number;
   }): Promise<APIResponse> {
     const params: Record<string, string> = {};
-    
+
     if (filters) {
-      if (filters.city) params.city = filters.city;
-      if (filters.state) params.state = filters.state;
-      if (filters.specialization) params.specialization = filters.specialization;
-      if (filters.minRating) params.minRating = filters.minRating.toString();
-      if (filters.availableCapacity) params.availableCapacity = filters.availableCapacity.toString();
-      if (filters.page) params.page = filters.page.toString();
-      if (filters.limit) params.limit = filters.limit.toString();
+      // coerce values safely and only include defined ones
+      if (filters.city) params.city = String(filters.city).trim();
+      if (filters.state) params.state = String(filters.state).trim();
+      if (typeof filters.specialization !== 'undefined' && filters.specialization !== null) params.specialization = String(filters.specialization);
+      if (typeof filters.minRating === 'number' && !Number.isNaN(filters.minRating)) params.minRating = String(filters.minRating);
+      if (typeof filters.availableCapacity === 'boolean') params.availableCapacity = String(filters.availableCapacity);
+      if (typeof filters.page === 'number' && Number.isFinite(filters.page)) params.page = String(filters.page);
+      if (typeof filters.limit === 'number' && Number.isFinite(filters.limit)) params.limit = String(filters.limit);
     }
 
     // pass params as an options object so ApiClient can attach them correctly

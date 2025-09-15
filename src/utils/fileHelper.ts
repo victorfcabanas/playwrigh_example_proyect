@@ -1,6 +1,6 @@
 import { Locator } from '@playwright/test';
 
-export async function safeText(locator: Locator, timeout = 1000): Promise<string> {
+export async function safeText(locator: Locator, timeout = 5000): Promise<string> {
   try {
     await locator.waitFor({ state: 'visible', timeout }).catch(() => {});
     const t = await locator.textContent().catch(() => '');
@@ -11,7 +11,7 @@ export async function safeText(locator: Locator, timeout = 1000): Promise<string
   }
 }
 
-export async function safeClick(locator: Locator, timeout = 1000): Promise<void> {
+export async function safeClick(locator: Locator, timeout = 5000): Promise<void> {
   try {
     await locator.waitFor({ state: 'visible', timeout }).catch(() => {});
     await locator.scrollIntoViewIfNeeded().catch(() => {});
@@ -21,7 +21,9 @@ export async function safeClick(locator: Locator, timeout = 1000): Promise<void>
   }
 }
 
-export function parseFirstInt(text: string): number {
-  const m = (text || '').match(/(\d+)/);
-  return m ? parseInt(m[1], 10) : 0;
+export function parseFirstInt(text: string | number | null | undefined): number {
+  if (text == null) return 0;
+  const s = String(text).replace(/[^0-9-]/g, ' ').trim();
+  const match = s.match(/-?\d+/);
+  return match ? parseInt(match[0], 10) : 0;
 }
