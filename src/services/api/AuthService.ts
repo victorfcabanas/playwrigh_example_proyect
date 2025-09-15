@@ -7,7 +7,8 @@ export class AuthService {
 
   constructor(request: APIRequestContext, baseURL: string) {
     this.apiClient = new ApiClient(request);
-    (this.apiClient as any).baseURL = baseURL;
+    // prefer the public setter so ApiClient can normalize URL building
+    this.apiClient.setBaseURL(baseURL);
   }
 
   async login(email: string, password: string): Promise<APIResponse> {

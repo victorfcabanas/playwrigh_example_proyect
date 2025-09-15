@@ -39,17 +39,18 @@ export class VehiclesService {
     limit?: number;
   }): Promise<APIResponse> {
     const params: Record<string, string> = {};
-    
+
     if (filters) {
-      if (filters.ownerId) params.ownerId = filters.ownerId;
-      if (filters.make) params.make = filters.make;
-      if (filters.type) params.type = filters.type;
-      if (filters.year) params.year = filters.year.toString();
-      if (filters.page) params.page = filters.page.toString();
-      if (filters.limit) params.limit = filters.limit.toString();
+      if (typeof filters.ownerId !== 'undefined' && filters.ownerId !== null) params.ownerId = String(filters.ownerId);
+      if (typeof filters.make !== 'undefined' && filters.make !== null) params.make = String(filters.make);
+      if (typeof filters.type !== 'undefined' && filters.type !== null) params.type = String(filters.type);
+      if (typeof filters.year === 'number' && Number.isFinite(filters.year)) params.year = String(filters.year);
+      if (typeof filters.page === 'number' && Number.isFinite(filters.page)) params.page = String(filters.page);
+      if (typeof filters.limit === 'number' && Number.isFinite(filters.limit)) params.limit = String(filters.limit);
     }
 
-    return await this.apiClient.get('/api/v1/vehicles', { params });
+    const options = Object.keys(params).length ? { params } : undefined;
+    return await this.apiClient.get('/api/v1/vehicles', options as any);
   }
 
   async validateVin(vin: string): Promise<APIResponse> {
