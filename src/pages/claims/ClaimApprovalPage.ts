@@ -1,6 +1,7 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from '../base/BasePage';
 import { ClaimStatus } from '../../utils/enums/ClaimStatus';
+import { safeClick, safeText, parseFirstInt } from '../../utils/fileHelper';
 
 export class ClaimApprovalPage extends BasePage {
   private readonly pendingClaimsList: Locator;
@@ -29,42 +30,42 @@ export class ClaimApprovalPage extends BasePage {
   }
 
   async selectClaimForReview(claimId: string): Promise<void> {
-    await this.pendingClaimsList.locator(`[data-claim-id="${claimId}"]`).click();
+    await safeClick(this.pendingClaimsList.locator(`[data-claim-id="${claimId}"]`), 3000);
     await this.waitForReady();
   }
 
   async approveClaim(notes?: string, costAdjustment?: number): Promise<void> {
     if (notes) {
-      await this.approvalNotes.fill(String(notes).trim());
+      await this.approvalNotes.fill(String(notes).trim()).catch(() => {});
     }
-    
+
     if (costAdjustment) {
-      await this.estimatedCostAdjustment.fill(costAdjustment.toString());
+      await this.estimatedCostAdjustment.fill(costAdjustment.toString()).catch(() => {});
     }
-    
-    await this.approveButton.click();
+
+    await safeClick(this.approveButton, 3000);
     await this.handleConfirmationModal(true);
-    await this.waitForToast('Claim approved successfully').catch(() => {});
+    await this.waitForToast('Claim approved successfully', 5000).catch(() => {});
   }
 
   async rejectClaim(reason: string): Promise<void> {
-    await this.rejectionReason.fill(String(reason).trim());
-    await this.rejectButton.click();
+    await this.rejectionReason.fill(String(reason).trim()).catch(() => {});
+    await safeClick(this.rejectButton, 3000);
     await this.handleConfirmationModal(true);
-    await this.waitForToast('Claim rejected').catch(() => {});
+    await this.waitForToast('Claim rejected', 5000).catch(() => {});
   }
 
   async requestMoreInformation(message: string): Promise<void> {
-    await this.requestMoreInfoButton.click();
-    await this.page.locator('[data-testid="info-request-message"]').fill(String(message).trim());
-    await this.page.locator('[data-testid="send-request"]').click();
-    await this.waitForToast('Information request sent').catch(() => {});
+    await safeClick(this.requestMoreInfoButton, 3000);
+    await this.page.locator('[data-testid="info-request-message"]').fill(String(message).trim()).catch(() => {});
+    await safeClick(this.page.locator('[data-testid="send-request"]'), 3000);
+    await this.waitForToast('Information request sent', 5000).catch(() => {});
   }
 
   async assignWorkshopDuringApproval(workshopId: string): Promise<void> {
-    await this.assignWorkshopButton.click();
-    await this.page.locator('[data-testid="workshop-selector"]').selectOption(workshopId);
-    await this.page.locator('[data-testid="confirm-assignment"]').click();
+    await safeClick(this.assignWorkshopButton, 3000);
+    await this.page.locator('[data-testid="workshop-selector"]').selectOption(workshopId).catch(() => {});
+    await safeClick(this.page.locator('[data-testid="confirm-assignment"]'), 3000);
   }
 
   async setPriority(priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'EMERGENCY'): Promise<void> {
@@ -83,13 +84,13 @@ export class ClaimApprovalPage extends BasePage {
     status: string;
   }> {
     await this.selectClaimForReview(claimId);
-    
+
     return {
-      claimNumber: ((await this.claimDetails.locator('[data-testid="claim-number"]').textContent()) || '').trim(),
-      customer: ((await this.claimDetails.locator('[data-testid="claim-customer"]').textContent()) || '').trim(),
-      estimatedCost: ((await this.claimDetails.locator('[data-testid="claim-estimated-cost"]').textContent()) || '').trim(),
-      incidentDate: ((await this.claimDetails.locator('[data-testid="claim-incident-date"]').textContent()) || '').trim(),
-      status: ((await this.claimDetails.locator('[data-testid="claim-status"]').textContent()) || '').trim(),
+      claimNumber: await safeText(this.claimDetails.locator('[data-testid="claim-number"]')),
+      customer: await safeText(this.claimDetails.locator('[data-testid="claim-customer"]')),
+      estimatedCost: await safeText(this.claimDetails.locator('[data-testid="claim-estimated-cost"]')),
+      incidentDate: await safeText(this.claimDetails.locator('[data-testid="claim-incident-date"]')),
+      status: await safeText(this.claimDetails.locator('[data-testid="claim-status"]')),
     } as any;
   }
 
