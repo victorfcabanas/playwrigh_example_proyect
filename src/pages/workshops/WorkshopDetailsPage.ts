@@ -41,19 +41,19 @@ export class WorkshopDetailsPage extends BasePage {
     const result: string[] = [];
     const count = await items.count();
     for (let i = 0; i < count; i++) {
-      result.push(((await items.nth(i).textContent().catch(() => '')) || '').trim());
+      result.push(await safeText(items.nth(i)));
     }
     return result;
   }
 
   async assignClaim(claimId: string): Promise<void> {
-    await safeClick(this.assignClaimButton);
+    await safeClick(this.assignClaimButton, 4000);
     await this.page.locator('[data-testid="claim-selector"]').selectOption(claimId).catch(() => {});
-    await safeClick(this.page.locator('[data-testid="confirm-assign"]'));
-    await this.waitForToast('Claim assigned to workshop').catch(() => {});
+    await safeClick(this.page.locator('[data-testid="confirm-assign"]'), 4000);
+    await this.waitForToast('Claim assigned to workshop', 5000).catch(() => {});
   }
 
   async editWorkshop(): Promise<void> {
-    await this.editWorkshopButton.click();
+    await safeClick(this.editWorkshopButton, 3000);
   }
 }
