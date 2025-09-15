@@ -33,9 +33,9 @@ export class UsersService {
   async getUsers(filters?: { role?: UserRole; page?: number; limit?: number }): Promise<APIResponse> {
     const params: Record<string, string> = {};
     if (filters) {
-      if (filters.role) params.role = filters.role;
-      if (filters.page) params.page = String(filters.page);
-      if (filters.limit) params.limit = String(filters.limit);
+      if (typeof filters.role !== 'undefined' && filters.role !== null) params.role = String(filters.role);
+      if (typeof filters.page === 'number' && Number.isFinite(filters.page)) params.page = String(filters.page);
+      if (typeof filters.limit === 'number' && Number.isFinite(filters.limit)) params.limit = String(filters.limit);
     }
     const options = Object.keys(params).length ? { params } : undefined;
     return await this.apiClient.get('/api/v1/users', options as any);

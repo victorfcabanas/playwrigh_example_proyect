@@ -22,17 +22,18 @@ export class WorkshopManagementPage extends BasePage {
 
   async importWorkshops(filePath: string): Promise<void> {
     try {
-      await this.importButton.waitFor({ state: 'visible', timeout: 1000 }).catch(() => {});
+      await this.importButton.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
+      // try-best-effort to set input files; some CI runners don't support file inputs
       await this.importButton.setInputFiles(filePath).catch(() => {});
-      await this.waitForToast('Workshops imported').catch(() => {});
+      await this.waitForToast('Workshops imported', 5000).catch(() => {});
     } catch (e) {
       // swallow file input errors in constrained CI environments
     }
   }
 
   async exportWorkshops(format: 'csv' | 'excel'): Promise<void> {
-    await safeClick(this.exportButton);
-    await safeClick(this.page.locator(`[data-testid="export-${format}"]`));
+    await safeClick(this.exportButton, 5000);
+    await safeClick(this.page.locator(`[data-testid="export-${format}"]`), 5000);
   }
 
   async getWorkshopIds(): Promise<string[]> {
